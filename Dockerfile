@@ -13,4 +13,4 @@ WORKDIR /
 RUN rm -rf .cache /var/cache/apt
 RUN rm -rf /cli
 
-CMD ["sh", "-c", "/opt/redis-stack/bin/redis-stack-server --daemonize yes && iredis"]
+CMD ["sh", "-c", "/opt/redis-stack/bin/redis-stack-server --daemonize yes && diceroll"]

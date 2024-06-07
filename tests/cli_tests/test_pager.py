@@ -9,7 +9,7 @@ from packaging.version import parse as version_parse
 import pexpect
 
 
-TEST_IREDISRC = "/tmp/.iredisrc.test"
+TEST_DICEROLLRC = "/tmp/.dicerollrc.test"
 TEST_PAGER_BOUNDARY = "---boundary---"
 TEST_PAGER_BOUNDARY_NUMBER = "---88938347271---"
 
@@ -33,7 +33,7 @@ if version_parse(os.environ["REDIS_VERSION"]) >= version_parse("7"):
 def pager_enabled_cli():
     env = os.environ
     env["PAGER"] = env_pager
-    child = pexpect.spawn("iredis -n 15", timeout=3, env=env)
+    child = pexpect.spawn("diceroll -n 15", timeout=3, env=env)
     child.logfile_read = open("cli_test.log", "ab")
     child.expect("127.0.0.1")
     try:
@@ -75,15 +75,15 @@ def test_using_pager_from_config(clean_redis):
     config_content = dedent(
         f"""
         [main]
-        log_location = /tmp/iredis1.log
+        log_location = /tmp/diceroll1.log
         pager = {env_pager_numbers}
         """
     )
 
-    with open(TEST_IREDISRC, "w+") as test_iredisrc:
-        test_iredisrc.write(config_content)
+    with open(TEST_DICEROLLRC, "w+") as test_dicerollrc:
+        test_dicerollrc.write(config_content)
 
-    child = pexpect.spawn(f"iredis -n 15 --iredisrc {TEST_IREDISRC}", timeout=3)
+    child = pexpect.spawn(f"diceroll -n 15 --dicerollrc {TEST_DICEROLLRC}", timeout=3)
     child.logfile_read = open("cli_test.log", "ab")
     child.expect("127.0.0.1")
     for index in range(100):
@@ -99,18 +99,18 @@ def test_using_pager_from_config_when_env_config_both_set(clean_redis):
     config_content = dedent(
         f"""
         [main]
-        log_location = /tmp/iredis1.log
+        log_location = /tmp/diceroll1.log
         pager = {env_pager_numbers}
         """
     )
 
-    with open(TEST_IREDISRC, "w+") as test_iredisrc:
-        test_iredisrc.write(config_content)
+    with open(TEST_DICEROLLRC, "w+") as test_dicerollrc:
+        test_dicerollrc.write(config_content)
 
     env = os.environ
     env["PAGER"] = env_pager
     child = pexpect.spawn(
-        f"iredis -n 15 --iredisrc {TEST_IREDISRC}", timeout=3, env=env
+        f"diceroll -n 15 --dicerollrc {TEST_DICEROLLRC}", timeout=3, env=env
     )
     child.logfile_read = open("cli_test.log", "ab")
     child.expect("127.0.0.1")

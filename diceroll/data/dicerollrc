@@ -3,8 +3,8 @@
 # weather display raw redis response
 raw = False
 
-# iredis use a LRU strategy to store the completions, like keys, set members,
-# etc, this will set how many completions can iredis keep at most.
+# diceroll use a LRU strategy to store the completions, like keys, set members,
+# etc, this will set how many completions can diceroll keep at most.
 completer_max = 300
 
 # Completion casing preference, options are: "lower", "upper", "auto"
@@ -22,9 +22,9 @@ retry_times = 2
 
 socket_keepalive = True
 
-# IRedis support running shell command to parse the response, like this:
+# Diceroll support running shell command to parse the response, like this:
 # > get json-str | jq .
-# However that will allow any shell command to execute under iredis REPL,
+# However that will allow any shell command to execute under diceroll REPL,
 # you can disable this feature by setting this to False.
 # Default is True.
 shell = True
@@ -39,11 +39,11 @@ enable_pager = True
 # By default 'PAGER' environment variable is used
 # pager = less -SRXF
 
-# iredis will send a `INFO` command to get the server's version, this option can
+# diceroll will send a `INFO` command to get the server's version, this option can
 # disable it
 no_info = False
 
-# iredis will show command hint on bottom bar, this option can disable it
+# diceroll will show command hint on bottom bar, this option can disable it
 bottom_bar = True
 
 # Dangerous command warning mode will alert you before executing a dangerous
@@ -51,11 +51,11 @@ bottom_bar = True
 # such as "KEYS", "DEL" or "SHUTDOWN".
 warning = True
 
-# IRedis log for debugging, leave this blank will disable log.
-# You don't need this unless you are debugging iredis.
+# Diceroll log for debugging, leave this blank will disable log.
+# You don't need this unless you are debugging diceroll.
 # Be careful this will log your commands input (include AUTH with password) to
 # log file.
-# eg. ~/.iredis.log
+# eg. ~/.diceroll.log
 log_location =
 
 # You can change the prompt str, if left blank, the default prompt would be:
@@ -74,7 +74,7 @@ log_location =
 prompt = 
 
 # History file location
-history_location = ~/.iredis_history
+history_location = ~/.diceroll_history
 
 # if set to True, will display version information on startup
 # can set to False to disable it.

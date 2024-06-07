@@ -1,5 +1,5 @@
 """
-IRedis client.
+Diceroll client.
 """
 
 import re
@@ -32,7 +32,7 @@ from .commands import (
     split_command_args,
     split_unknown_args,
 )
-from .completers import IRedisCompleter
+from .completers import DicerollCompleter
 from .config import config
 from .exceptions import NotRedisCommand, InvalidArguments, AmbiguousCommand, NotSupport
 from .renders import OutputRender
@@ -46,12 +46,12 @@ from .utils import (
 from .warning import confirm_dangerous_command
 
 logger = logging.getLogger(__name__)
-CLIENT_COMMANDS = groups["iredis"]
+CLIENT_COMMANDS = groups["diceroll"]
 
 
 class Client:
     """
-    iRedis client, hold a redis-py Client to interact with Redis.
+    diceroll client, hold a redis-py Client to interact with Redis.
     """
 
     def __init__(
@@ -76,7 +76,7 @@ class Client:
         self.scheme = scheme
         self.password = password
 
-        # cli args --prompt will overwrite the prompt in iredisrc config file
+        # cli args --prompt will overwrite the prompt in dicerollrc config file
         self.prompt = ""
         if config.prompt:
             self.prompt = config.prompt
@@ -410,7 +410,7 @@ class Client:
         else:
             yield OutputRender.render_subscribe(response)
 
-    def split_command_and_pipeline(self, rawinput, completer: IRedisCompleter):
+    def split_command_and_pipeline(self, rawinput, completer: DicerollCompleter):
         """
         split user raw input to redis command and shell pipeline.
         eg:
@@ -451,7 +451,7 @@ class Client:
                 command_name, args = split_command_args(redis_command)
             except (InvalidArguments, AmbiguousCommand):
                 logger.warn(
-                    "This is not a iredis known command, send to redis-server anyway..."
+                    "This is not a diceroll known command, send to redis-server anyway..."
                 )
                 command_name, args = split_unknown_args(redis_command)
 
@@ -470,7 +470,7 @@ class Client:
             self.pre_hook(raw_command, command_name, args, completer)
             # if raw_command is not supposed to send to server
             if input_command_upper in CLIENT_COMMANDS:
-                logger.info(f"{input_command_upper} is an iredis command.")
+                logger.info(f"{input_command_upper} is an diceroll command.")
                 yield from self.client_execute_command(command_name, *args)
                 return
 
@@ -533,7 +533,7 @@ class Client:
         if completer:
             completer.update_completer_for_response(command_name, args, response)
 
-    def pre_hook(self, command, command_name, args, completer: IRedisCompleter):
+    def pre_hook(self, command, command_name, args, completer: DicerollCompleter):
         """
         Before execute command, patch completers first.
         Eg: When user run `GET foo`, key completer need to
@@ -542,7 +542,7 @@ class Client:
         Only works when compile-grammar thread is done.
         """
         if command_name.upper() == "HELLO":
-            raise NotSupport("IRedis currently not support RESP3, sorry about that.")
+            raise NotSupport("Diceroll currently not support RESP3, sorry about that.")
         # TRANSACTION state change
         if command_name.upper() in ["EXEC", "DISCARD"]:
             logger.debug(f"[After hook] Command is {command_name}, unset transaction.")

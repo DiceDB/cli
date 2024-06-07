@@ -7,15 +7,15 @@ import pexpect
 import pytest
 import redis
 
-from iredis.client import Client
-from iredis.commands import split_command_args
-from iredis.redis_grammar import get_command_grammar
-from iredis.exceptions import InvalidArguments
-from iredis.config import Config, config as global_config
+from diceroll.client import Client
+from diceroll.commands import split_command_args
+from diceroll.redis_grammar import get_command_grammar
+from diceroll.exceptions import InvalidArguments
+from diceroll.config import Config, config as global_config
 
 
 TIMEOUT = 2
-HISTORY_FILE = ".iredis_history"
+HISTORY_FILE = ".diceroll_history"
 
 
 @pytest.fixture
@@ -75,7 +75,7 @@ def clean_redis():
 
 
 @pytest.fixture
-def iredis_client():
+def diceroll_client():
     return Client("127.0.0.1", "6379", db=15)
 
 
@@ -89,7 +89,7 @@ def config():
 
 @pytest.fixture(scope="function")
 def cli():
-    """Open iredis subprocess to test"""
+    """Open diceroll subprocess to test"""
     f = tempfile.TemporaryFile("w")
     config_content = dedent(
         """
@@ -103,17 +103,17 @@ def cli():
     env = os.environ
     env["PROMPT_TOOLKIT_NO_CPR"] = "1"
 
-    child = pexpect.spawn(f"iredis -n 15 --iredisrc {f.name}", timeout=TIMEOUT, env=env)
+    child = pexpect.spawn(f"diceroll -n 15 --dicerollrc {f.name}", timeout=TIMEOUT, env=env)
     child.logfile_read = open("cli_test.log", "ab")
-    child.expect(["https://github.com/laixintao/iredis/issues", "127.0.0.1"])
+    child.expect(["https://github.com/dicedb/diceroll/issues", "127.0.0.1"])
     yield child
     child.close()
 
 
 @pytest.fixture(scope="function")
 def raw_cli():
-    """Open iredis subprocess to test"""
-    TEST_IREDISRC = "/tmp/.iredisrc.test"
+    """Open diceroll subprocess to test"""
+    TEST_DICEROLLRC = "/tmp/.dicerollrc.test"
     config_content = dedent(
         """
         [main]
@@ -122,14 +122,14 @@ def raw_cli():
         """
     )
 
-    with open(TEST_IREDISRC, "w+") as test_iredisrc:
-        test_iredisrc.write(config_content)
+    with open(TEST_DICEROLLRC, "w+") as test_dicerollrc:
+        test_dicerollrc.write(config_content)
 
     child = pexpect.spawn(
-        f"iredis --raw -n 15 --iredisrc {TEST_IREDISRC}", timeout=TIMEOUT
+        f"diceroll --raw -n 15 --dicerollrc {TEST_DICEROLLRC}", timeout=TIMEOUT
     )
     child.logfile_read = open("cli_test.log", "ab")
-    child.expect(["https://github.com/laixintao/iredis/issues", "127.0.0.1"])
+    child.expect(["https://github.com/dicedb/diceroll/issues", "127.0.0.1"])
     yield child
     child.close()
 
@@ -140,15 +140,15 @@ def cli_without_warning():
     config_content = dedent(
         """
         [main]
-        log_location = /tmp/iredis1.log
+        log_location = /tmp/diceroll1.log
         warning = False
         """
     )
     f.write(config_content)
     f.close()
 
-    cli = pexpect.spawn(f"iredis -n 15 --iredisrc {f.name}", timeout=1)
+    cli = pexpect.spawn(f"diceroll -n 15 --dicerollrc {f.name}", timeout=1)
     cli.logfile_read = open("cli_test.log", "ab")
     yield cli
     cli.close()
-    os.remove("/tmp/iredisrc")
+    os.remove("/tmp/dicerollrc")

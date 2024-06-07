@@ -196,6 +196,9 @@ def test_acl_cat(judge_command):
 
 def test_acl_deluser(judge_command):
     judge_command(
+        "acl deluser arpitbbhayani ", {"command": "acl deluser", "username": "arpitbbhayani"}
+    )
+    judge_command(
         "acl deluser laixintao", {"command": "acl deluser", "username": "laixintao"}
     )
     judge_command(

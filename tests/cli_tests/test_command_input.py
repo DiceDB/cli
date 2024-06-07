@@ -60,7 +60,7 @@ def test_auth_hidden_password(clean_redis, cli):
 
 def test_hello_command_is_not_supported(cli):
     cli.sendline("hello 3")
-    cli.expect("IRedis currently not support RESP3")
+    cli.expect("Diceroll currently not support RESP3")
 
 
 @pytest.mark.xfail(reason="unstable, maybe due to github action's signal handling")

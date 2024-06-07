@@ -4,8 +4,8 @@ from freezegun import freeze_time
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.completion import Completion
 
-from iredis.completers import MostRecentlyUsedFirstWordCompleter
-from iredis.completers import IRedisCompleter, TimestampCompleter, IntegerTypeCompleter
+from diceroll.completers import MostRecentlyUsedFirstWordCompleter
+from diceroll.completers import DicerollCompleter, TimestampCompleter, IntegerTypeCompleter
 
 
 def test_LUF_completer_touch():
@@ -32,7 +32,7 @@ def test_LUF_completer_touch_words():
 def test_newbie_mode_complete_without_meta_dict():
     fake_document = MagicMock()
     fake_document.text_before_cursor = fake_document.text = "GEOR"
-    completer = IRedisCompleter(hint=False)
+    completer = DicerollCompleter(hint=False)
     completions = list(completer.get_completions(fake_document, None))
     assert [word.text for word in completions] == ["GEORADIUS", "GEORADIUSBYMEMBER"]
     assert [word.display_meta for word in completions] == [
@@ -44,7 +44,7 @@ def test_newbie_mode_complete_without_meta_dict():
 def test_newbie_mode_complete_with_meta_dict():
     fake_document = MagicMock()
     fake_document.text_before_cursor = fake_document.text = "GEOR"
-    completer = IRedisCompleter(hint=True)
+    completer = DicerollCompleter(hint=True)
     completions = list(completer.get_completions(fake_document, None))
 
     assert sorted([completion.display_meta for completion in completions]) == [
@@ -70,7 +70,7 @@ def test_newbie_mode_complete_with_meta_dict():
 def test_newbie_mode_complete_with_meta_dict_command_is_lowercase():
     fake_document = MagicMock()
     fake_document.text_before_cursor = fake_document.text = "geor"
-    completer = IRedisCompleter(hint=True)
+    completer = DicerollCompleter(hint=True)
     completions = list(completer.get_completions(fake_document, None))
 
     assert sorted([completion.display_meta for completion in completions]) == [
@@ -93,8 +93,8 @@ def test_newbie_mode_complete_with_meta_dict_command_is_lowercase():
     ]
 
 
-def test_iredis_completer_update_for_response():
-    c = IRedisCompleter()
+def test_diceroll_completer_update_for_response():
+    c = DicerollCompleter()
     c.update_completer_for_response(
         "HGETALL",
         (),
@@ -113,7 +113,7 @@ def test_iredis_completer_update_for_response():
 
 
 def test_categoryname_completer_update_for_response():
-    c = IRedisCompleter()
+    c = DicerollCompleter()
     c.update_completer_for_response(
         "ACL CAT",
         (),
@@ -129,7 +129,7 @@ def test_categoryname_completer_update_for_response():
 
 
 def test_completer_when_there_are_spaces_in_command():
-    c = IRedisCompleter()
+    c = DicerollCompleter()
     c.update_completer_for_response(
         "ACL    cat",
         (),
@@ -150,8 +150,8 @@ def test_completer_when_there_are_spaces_in_command():
     ]
 
 
-def test_iredis_completer_no_exception_for_none_response():
-    c = IRedisCompleter()
+def test_diceroll_completer_no_exception_for_none_response():
+    c = DicerollCompleter()
     c.update_completer_for_response("XPENDING", None, None)
     c.update_completer_for_response("KEYS", None, None)
 
@@ -160,7 +160,7 @@ def test_group_completer():
     fake_document = MagicMock()
     previous_commands = ["xgroup create abc world 123", "xgroup setid abc hello 123"]
     fake_document.text = fake_document.text_before_cursor = "XGROUP DESTROY key "
-    completer = IRedisCompleter()
+    completer = DicerollCompleter()
     for command in previous_commands:
         completer.update_completer_for_input(command)
     completions = list(completer.get_completions(fake_document, None))
@@ -368,7 +368,7 @@ def test_integer_type_completer():
 
 
 def test_completion_casing():
-    c = IRedisCompleter(completion_casing="auto")
+    c = DicerollCompleter(completion_casing="auto")
     fake_document = MagicMock()
     fake_document.text = fake_document.text_before_cursor = "ge"
     assert [
@@ -390,19 +390,19 @@ def test_completion_casing():
         "georadiusbymember",
     ]
 
-    c = IRedisCompleter(completion_casing="auto")
+    c = DicerollCompleter(completion_casing="auto")
     fake_document.text = fake_document.text_before_cursor = "GET"
     assert [
         completion.text for completion in c.get_completions(fake_document, None)
     ] == ["GET", "GETEX", "GETSET", "GETDEL", "GETBIT", "GETRANGE"]
 
-    c = IRedisCompleter(completion_casing="upper")
+    c = DicerollCompleter(completion_casing="upper")
     fake_document.text = fake_document.text_before_cursor = "get"
     assert [
         completion.text for completion in c.get_completions(fake_document, None)
     ] == ["GET", "GETEX", "GETSET", "GETDEL", "GETBIT", "GETRANGE"]
 
-    c = IRedisCompleter(completion_casing="lower")
+    c = DicerollCompleter(completion_casing="lower")
     fake_document.text = fake_document.text_before_cursor = "GET"
     assert [
         completion.text for completion in c.get_completions(fake_document, None)
@@ -410,7 +410,8 @@ def test_completion_casing():
 
 
 def test_username_completer():
-    completer = IRedisCompleter()
+    completer = DicerollCompleter()
+    completer.update_completer_for_input("acl deluser arpitbbhayani")
     completer.update_completer_for_input("acl deluser laixintao")
     completer.update_completer_for_input("acl deluser antirez")
 
@@ -420,11 +421,12 @@ def test_username_completer():
     assert sorted([completion.text for completion in completions]) == [
         "antirez",
         "laixintao",
+        "arpitbbhayani",
     ]
 
 
 def test_username_touch_for_response():
-    c = IRedisCompleter()
+    c = DicerollCompleter()
     c.update_completer_for_response(
         "acl   users",
         (),

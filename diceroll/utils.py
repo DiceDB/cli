@@ -7,7 +7,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from prompt_toolkit.formatted_text import FormattedText
 
-from iredis.exceptions import InvalidArguments
+from diceroll.exceptions import InvalidArguments
 
 logger = logging.getLogger(__name__)
 
@@ -250,7 +250,7 @@ def double_quotes(unquoted):
 
 def exit():
     """
-    Exit IRedis REPL
+    Exit Diceroll REPL
     """
     print("Goodbye!")
     sys.exit()
