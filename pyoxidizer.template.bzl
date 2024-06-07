@@ -177,7 +177,7 @@ def make_exe(dist):
     # python_config.write_modules_directory_env = "/tmp/oxidized/loaded_modules"
 
     # Evaluate a string as Python code when the interpreter starts.
-    python_config.run_command = "from iredis.entry import main; main()"
+    python_config.run_command = "from dice.entry import main; main()"
 
     # Run a Python module as __main__ when the interpreter starts.
     # python_config.run_module = "<module>"
@@ -189,7 +189,7 @@ def make_exe(dist):
     # resources, and other options. The returned object represents the
     # standalone executable that will be built.
     exe = dist.to_python_executable(
-        name="iredis",
+        name="dice",
 
         # If no argument passed, the default `PythonPackagingPolicy` for the
         # distribution is used.
@@ -278,13 +278,13 @@ def make_msi(exe):
     # .msi installer when it is built.
     return exe.to_wix_msi_builder(
         # Simple identifier of your app.
-        "iredis",
+        "dice",
         # The name of your application.
-        "iredis",
+        "dice",
         # The version of your application.
         "1.9.1",
         # The author/manufacturer of your application.
-        "laixintao"
+        "arpitbbhayani"
     )
 
 

@@ -8,19 +8,19 @@ from prompt_toolkit.formatted_text import FormattedText
 import pytest
 import redis
 
-from iredis.client import Client
-from iredis.commands import command2syntax
-from iredis.completers import IRedisCompleter
-from iredis.config import config, load_config_files
-from iredis.entry import Rainbow, prompt_message
-from iredis.exceptions import NotSupport
+from dice.client import Client
+from dice.commands import command2syntax
+from dice.completers import diceCompleter
+from dice.config import config, load_config_files
+from dice.entry import Rainbow, prompt_message
+from dice.exceptions import NotSupport
 
 from ..helpers import formatted_text_rematch
 
 
 @pytest.fixture
 def completer():
-    return IRedisCompleter()
+    return diceCompleter()
 
 
 zset_type = "ziplist"
@@ -49,14 +49,14 @@ def test_send_command(_input, command_name, expect_args):
     assert args == (command_name, *expect_args)
 
 
-def test_client_not_support_hello_command(iredis_client):
+def test_client_not_support_hello_command(dice_client):
     with pytest.raises(NotSupport):
-        iredis_client.pre_hook("hello 3", "hello", "3", None)
+        dice_client.pre_hook("hello 3", "hello", "3", None)
 
 
 def test_patch_completer():
     client = Client("127.0.0.1", "6379", None)
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     client.pre_hook(
         "MGET foo bar hello world", "MGET", "foo bar hello world", completer
     )
@@ -106,19 +106,19 @@ def test_rainbow_iterator():
     Rainbow.color = original_color
 
 
-def test_prompt_message(iredis_client, config):
+def test_prompt_message(dice_client, config):
     config.rainbow = False
-    assert prompt_message(iredis_client) == "127.0.0.1:6379[15]> "
+    assert prompt_message(dice_client) == "127.0.0.1:6379[15]> "
 
     config.rainbow = True
-    assert prompt_message(iredis_client)[:3] == [
+    assert prompt_message(dice_client)[:3] == [
         ("#cc2244", "1"),
         ("#bb4444", "2"),
         ("#996644", "7"),
     ]
 
 
-def test_on_connection_error_retry(iredis_client, config):
+def test_on_connection_error_retry(dice_client, config):
     config.retry_times = 1
     mock_connection = MagicMock()
     mock_connection.read_response.side_effect = [
@@ -127,18 +127,18 @@ def test_on_connection_error_retry(iredis_client, config):
         ),
         "hello",
     ]
-    original_connection = iredis_client.connection
-    iredis_client.connection = mock_connection
-    value = iredis_client.execute("None", "GET", ["foo"])
+    original_connection = dice_client.connection
+    dice_client.connection = mock_connection
+    value = dice_client.execute("None", "GET", ["foo"])
     assert value == "hello"  # be rendered
 
     mock_connection.disconnect.assert_called_once()
     mock_connection.connect.assert_called_once()
 
-    iredis_client.connection = original_connection
+    dice_client.connection = original_connection
 
 
-def test_on_connection_error_retry_without_retrytimes(iredis_client, config):
+def test_on_connection_error_retry_without_retrytimes(dice_client, config):
     config.retry_times = 0
     mock_connection = MagicMock()
     mock_connection.read_response.side_effect = [
@@ -147,9 +147,9 @@ def test_on_connection_error_retry_without_retrytimes(iredis_client, config):
         ),
         "hello",
     ]
-    iredis_client.connection = mock_connection
+    dice_client.connection = mock_connection
     with pytest.raises(redis.exceptions.ConnectionError):
-        iredis_client.execute("None", "GET", ["foo"])
+        dice_client.execute("None", "GET", ["foo"])
 
     mock_connection.disconnect.assert_not_called()
     mock_connection.connect.assert_not_called()
@@ -157,7 +157,7 @@ def test_on_connection_error_retry_without_retrytimes(iredis_client, config):
 
 def test_socket_keepalive(config):
     config.socket_keepalive = True
-    from iredis.client import Client
+    from dice.client import Client
 
     newclient = Client("127.0.0.1", "6379", 0)
     assert newclient.connection.socket_keepalive
@@ -169,16 +169,16 @@ def test_socket_keepalive(config):
     assert not newclient.connection.socket_keepalive
 
 
-def test_not_retry_on_authentication_error(iredis_client, config):
+def test_not_retry_on_authentication_error(dice_client, config):
     config.retry_times = 2
     mock_connection = MagicMock()
     mock_connection.read_response.side_effect = [
         redis.exceptions.AuthenticationError("Authentication required."),
         "hello",
     ]
-    iredis_client.connection = mock_connection
+    dice_client.connection = mock_connection
     with pytest.raises(redis.exceptions.ConnectionError):
-        iredis_client.execute("None", "GET", ["foo"])
+        dice_client.execute("None", "GET", ["foo"])
 
 
 @pytest.mark.skipif(
@@ -191,77 +191,77 @@ in redis7, it will not work if you:
 
 the auth will fail""",
 )
-def test_auto_select_db_and_auth_for_reconnect_only_6(iredis_client, config):
+def test_auto_select_db_and_auth_for_reconnect_only_6(dice_client, config):
     config.retry_times = 2
     config.raw = True
-    next(iredis_client.send_command("select 2"))
-    assert iredis_client.connection.db == 2
+    next(dice_client.send_command("select 2"))
+    assert dice_client.connection.db == 2
 
-    resp = next(iredis_client.send_command("auth 123"))
+    resp = next(dice_client.send_command("auth 123"))
 
     assert (
         b"ERROR AUTH <password> called without any "
         b"password configured for the default user. "
         b"Are you sure your configuration is correct?" in resp
     )
-    assert iredis_client.connection.password is None
+    assert dice_client.connection.password is None
 
-    next(iredis_client.send_command("config set requirepass 'abc'"))
-    next(iredis_client.send_command("auth abc"))
-    assert iredis_client.connection.password == "abc"
+    next(dice_client.send_command("config set requirepass 'abc'"))
+    next(dice_client.send_command("auth abc"))
+    assert dice_client.connection.password == "abc"
     assert (
-        iredis_client.execute("ACL SETUSER", "default", "on", "nopass", "~*", "+@all")
+        dice_client.execute("ACL SETUSER", "default", "on", "nopass", "~*", "+@all")
         == b"OK"
     )
 
 
 @pytest.mark.skipif("version_parse(os.environ['REDIS_VERSION']) > version_parse('5')")
-def test_auto_select_db_and_auth_for_reconnect_only_5(iredis_client, config):
+def test_auto_select_db_and_auth_for_reconnect_only_5(dice_client, config):
     config.retry_times = 2
     config.raw = True
-    next(iredis_client.send_command("select 2"))
-    assert iredis_client.connection.db == 2
+    next(dice_client.send_command("select 2"))
+    assert dice_client.connection.db == 2
 
-    resp = next(iredis_client.send_command("auth 123"))
+    resp = next(dice_client.send_command("auth 123"))
 
     assert b"Client sent AUTH, but no password is set" in resp
-    assert iredis_client.connection.password is None
+    assert dice_client.connection.password is None
 
-    next(iredis_client.send_command("config set requirepass 'abc'"))
-    next(iredis_client.send_command("auth abc"))
-    assert iredis_client.connection.password == "abc"
-    next(iredis_client.send_command("config set requirepass ''"))
+    next(dice_client.send_command("config set requirepass 'abc'"))
+    next(dice_client.send_command("auth abc"))
+    assert dice_client.connection.password == "abc"
+    next(dice_client.send_command("config set requirepass ''"))
 
 
-def test_split_shell_command(iredis_client, completer):
-    assert iredis_client.split_command_and_pipeline(" get json | rg . ", completer) == (
+def test_split_shell_command(dice_client, completer):
+    assert dice_client.split_command_and_pipeline(" get json | rg . ", completer) == (
         " get json ",
         "rg . ",
     )
 
-    assert iredis_client.split_command_and_pipeline(
+    assert dice_client.split_command_and_pipeline(
         """ get "json | \\" hello" | rg . """, completer
     ) == (""" get "json | \\" hello" """, "rg . ")
 
 
-def test_running_with_pipeline(clean_redis, iredis_client, capfd, completer):
+def test_running_with_pipeline(clean_redis, dice_client, capfd, completer):
     config.shell = True
     clean_redis.set("foo", "hello \n world")
     with pytest.raises(StopIteration):
-        next(iredis_client.send_command("get foo | grep w", completer))
+        next(dice_client.send_command("get foo | grep w", completer))
     out, err = capfd.readouterr()
     assert out == " world\n"
 
 
-def test_running_with_multiple_pipeline(clean_redis, iredis_client, capfd, completer):
+def test_running_with_multiple_pipeline(clean_redis, dice_client, capfd, completer):
     config.shell = True
-    clean_redis.set("foo", "hello world\nhello iredis")
+    clean_redis.set("foo", "hello world\nhello dice")
     with pytest.raises(StopIteration):
         next(
-            iredis_client.send_command("get foo | grep hello | grep iredis", completer)
+            dice_client.send_command("get foo | grep hello | grep dice", completer)
         )
     out, err = capfd.readouterr()
-    assert out == "hello iredis\n"
+    assert out == "hello dice\n"
 
 
 def test_can_not_connect_on_startup(capfd):
@@ -271,22 +271,22 @@ def test_can_not_connect_on_startup(capfd):
     assert "connecting to localhost:16111." in err
 
 
-def test_peek_key_not_exist(iredis_client, clean_redis, config):
+def test_peek_key_not_exist(dice_client, clean_redis, config):
     config.raw = False
-    peek_result = list(iredis_client.do_peek("non-exist-key"))
+    peek_result = list(dice_client.do_peek("non-exist-key"))
     assert peek_result == ["non-exist-key doesn't exist."]
 
 
-def test_iredis_with_username():
+def test_dice_with_username():
     with patch("redis.connection.Connection.connect"):
         c = Client("127.0.0.1", "6379", username="abc", password="abc1")
         assert c.connection.username == "abc"
         assert c.connection.password == "abc1"
 
 
-def test_peek_string(iredis_client, clean_redis):
+def test_peek_string(dice_client, clean_redis):
     clean_redis.set("foo", "bar")
-    peek_result = list(iredis_client.do_peek("foo"))
+    peek_result = list(dice_client.do_peek("foo"))
 
     assert peek_result[0][0] == ("class:dockey", "key: ")
     assert re.match(r"string \(embstr\)  mem: \d+ bytes, ttl: -1", peek_result[0][1][1])
@@ -300,9 +300,9 @@ def test_peek_string(iredis_client, clean_redis):
     ]
 
 
-def test_peek_list_fetch_all(iredis_client, clean_redis):
+def test_peek_list_fetch_all(dice_client, clean_redis):
     clean_redis.lpush("mylist", *[f"hello-{index}" for index in range(5)])
-    peek_result = list(iredis_client.do_peek("mylist"))
+    peek_result = list(dice_client.do_peek("mylist"))
 
     formatted_text_rematch(
         peek_result[0],
@@ -340,31 +340,31 @@ def test_peek_list_fetch_all(iredis_client, clean_redis):
     )
 
 
-def test_peek_list_fetch_part(iredis_client, clean_redis):
+def test_peek_list_fetch_part(dice_client, clean_redis):
     clean_redis.lpush("mylist", *[f"hello-{index}" for index in range(40)])
-    peek_result = list(iredis_client.do_peek("mylist"))
+    peek_result = list(dice_client.do_peek("mylist"))
     assert len(peek_result[0]) == 91
 
 
-def test_peek_set_fetch_all(iredis_client, clean_redis):
+def test_peek_set_fetch_all(dice_client, clean_redis):
     clean_redis.sadd("myset", *[f"hello-{index}" for index in range(5)])
-    peek_result = list(iredis_client.do_peek("myset"))
+    peek_result = list(dice_client.do_peek("myset"))
     assert len(peek_result[0]) == 27
 
 
-def test_peek_set_fetch_part(iredis_client, clean_redis):
+def test_peek_set_fetch_part(dice_client, clean_redis):
     clean_redis.sadd("myset", *[f"hello-{index}" for index in range(40)])
-    peek_result = list(iredis_client.do_peek("myset"))
+    peek_result = list(dice_client.do_peek("myset"))
 
     assert peek_result[0][0] == ("class:dockey", "key: ")
     assert peek_result[0][1][1].startswith(f"set ({hash_type})  mem: ")
 
 
-def test_peek_zset_fetch_all(iredis_client, clean_redis):
+def test_peek_zset_fetch_all(dice_client, clean_redis):
     clean_redis.zadd(
         "myzset", dict(zip([f"hello-{index}" for index in range(3)], range(3)))
     )
-    peek_result = list(iredis_client.do_peek("myzset"))
+    peek_result = list(dice_client.do_peek("myzset"))
 
     formatted_text_rematch(
         peek_result[0][0:9],
@@ -384,11 +384,11 @@ def test_peek_zset_fetch_all(iredis_client, clean_redis):
     )
 
 
-def test_peek_zset_fetch_part(iredis_client, clean_redis):
+def test_peek_zset_fetch_part(dice_client, clean_redis):
     clean_redis.zadd(
         "myzset", dict(zip([f"hello-{index}" for index in range(40)], range(40)))
     )
-    peek_result = list(iredis_client.do_peek("myzset"))
+    peek_result = list(dice_client.do_peek("myzset"))
     formatted_text_rematch(
         peek_result[0][0:8],
         FormattedText(
@@ -406,28 +406,28 @@ def test_peek_zset_fetch_part(iredis_client, clean_redis):
     )
 
 
-def test_peek_hash_fetch_all(iredis_client, clean_redis):
+def test_peek_hash_fetch_all(dice_client, clean_redis):
     for key, value in zip(
         [f"hello-{index}" for index in range(3)], [f"hi-{index}" for index in range(3)]
     ):
         clean_redis.hset("myhash", key, value)
-    peek_result = list(iredis_client.do_peek("myhash"))
+    peek_result = list(dice_client.do_peek("myhash"))
     assert len(peek_result[0]) == 28
 
 
-def test_peek_hash_fetch_part(iredis_client, clean_redis):
+def test_peek_hash_fetch_part(dice_client, clean_redis):
     for key, value in zip(
         [f"hello-{index}" for index in range(100)],
         [f"hi-{index}" for index in range(100)],
     ):
         clean_redis.hset("myhash", key, value)
-    peek_result = list(iredis_client.do_peek("myhash"))
+    peek_result = list(dice_client.do_peek("myhash"))
     assert len(peek_result[0]) == 707
 
 
-def test_peek_stream(iredis_client, clean_redis):
+def test_peek_stream(dice_client, clean_redis):
     clean_redis.xadd("mystream", {"foo": "bar", "hello": "world"})
-    peek_result = list(iredis_client.do_peek("mystream"))
+    peek_result = list(dice_client.do_peek("mystream"))
 
     assert peek_result[0][0] == ("class:dockey", "key: ")
     assert re.match(
@@ -455,7 +455,7 @@ def test_peek_stream(iredis_client, clean_redis):
     )
 
 
-def test_mem_not_called_before_redis_4(config, iredis_client, clean_redis):
+def test_mem_not_called_before_redis_4(config, dice_client, clean_redis):
     config.version = "3.2.9"
 
     def wrapper(func):
@@ -467,14 +467,14 @@ def test_mem_not_called_before_redis_4(config, iredis_client, clean_redis):
 
         return execute
 
-    iredis_client.execute = wrapper(iredis_client.execute)
+    dice_client.execute = wrapper(dice_client.execute)
     clean_redis.set("foo", "bar")
-    result = list(iredis_client.do_peek("foo"))
+    result = list(dice_client.do_peek("foo"))
     assert result[0][1] == ("", "string (embstr), ttl: -1")
 
 
 def test_mem_not_called_when_cant_get_server_version(
-    config, iredis_client, clean_redis
+    config, dice_client, clean_redis
 ):
     config.version = None
 
@@ -487,20 +487,20 @@ def test_mem_not_called_when_cant_get_server_version(
 
         return execute
 
-    iredis_client.execute = wrapper(iredis_client.execute)
+    dice_client.execute = wrapper(dice_client.execute)
     clean_redis.set("foo", "bar")
-    result = list(iredis_client.do_peek("foo"))
+    result = list(dice_client.do_peek("foo"))
     assert result[0][1] == ("", "string (embstr), ttl: -1")
 
 
-def test_reissue_command_on_redis_cluster(iredis_client, clean_redis):
-    mock_response = iredis_client.connection = MagicMock()
+def test_reissue_command_on_redis_cluster(dice_client, clean_redis):
+    mock_response = dice_client.connection = MagicMock()
     mock_response.read_response.side_effect = redis.exceptions.ResponseError(
         "MOVED 12182 127.0.0.1:7002"
     )
-    iredis_client.reissue_with_redirect = MagicMock()
-    iredis_client.execute("set", "foo", "bar")
-    assert iredis_client.reissue_with_redirect.call_args == (
+    dice_client.reissue_with_redirect = MagicMock()
+    dice_client.execute("set", "foo", "bar")
+    assert dice_client.reissue_with_redirect.call_args == (
         (
             "MOVED 12182 127.0.0.1:7002",
             "set",
@@ -511,26 +511,26 @@ def test_reissue_command_on_redis_cluster(iredis_client, clean_redis):
 
 
 def test_reissue_command_on_redis_cluster_with_password_in_dsn(
-    iredis_client, clean_redis
+    dice_client, clean_redis
 ):
     config_content = dedent(
         """
         [main]
-        log_location = /tmp/iredis1.log
+        log_location = /tmp/dice1.log
         no_info=True
         [alias_dsn]
         cluster-7003=redis://foo:bar@127.0.0.1:7003
         """
     )
-    with open("/tmp/iredisrc", "w+") as etc_config:
+    with open("/tmp/dicerc", "w+") as etc_config:
         etc_config.write(config_content)
 
-    config_obj = load_config_files("/tmp/iredisrc")
+    config_obj = load_config_files("/tmp/dicerc")
     config.alias_dsn = config_obj["alias_dsn"]
 
-    mock_execute_by_connection = iredis_client.execute_by_connection = MagicMock()
+    mock_execute_by_connection = dice_client.execute_by_connection = MagicMock()
     with patch("redis.connection.Connection.connect"):
-        iredis_client.reissue_with_redirect(
+        dice_client.reissue_with_redirect(
             "MOVED 12182 127.0.0.1:7003", "set", "foo", "bar"
         )
 
@@ -540,15 +540,15 @@ def test_reissue_command_on_redis_cluster_with_password_in_dsn(
         assert call_args[0].password == "bar"
 
 
-def test_version_parse_for_auth(iredis_client):
+def test_version_parse_for_auth(dice_client):
     """
-    fix: https://github.com/laixintao/iredis/issues/418
+    fix: https://github.com/dicedb/cli/issues/418
     """
-    iredis_client.auth_compat("6.1.0")
+    dice_client.auth_compat("6.1.0")
     assert command2syntax["AUTH"] == "command_usernamex_password"
-    iredis_client.auth_compat("5.0")
+    dice_client.auth_compat("5.0")
     assert command2syntax["AUTH"] == "command_password"
-    iredis_client.auth_compat("5.0.14.1")
+    dice_client.auth_compat("5.0.14.1")
     assert command2syntax["AUTH"] == "command_password"
 
 
@@ -584,12 +584,12 @@ def test_version_parse_for_auth(iredis_client):
     ],
 )
 def test_version_path(info, version):
-    with patch("iredis.client.config") as mock_config:
+    with patch("dice.client.config") as mock_config:
         mock_config.no_info = True
         mock_config.pager = "less"
         mock_config.version = "5.0.0"
         mock_config.decode = "utf-8"
-        with patch("iredis.client.Client.execute") as mock_execute:
+        with patch("dice.client.Client.execute") as mock_execute:
             mock_execute.return_value = info
             client = Client("127.0.0.1", 6379)
             client.get_server_info()

@@ -3,7 +3,7 @@ import tempfile
 from unittest.mock import patch
 from prompt_toolkit.formatted_text import FormattedText
 
-from iredis.entry import (
+from dice.entry import (
     gather_args,
     parse_url,
     SkipAuthFileHistory,
@@ -11,7 +11,7 @@ from iredis.entry import (
     is_too_tall,
 )
 
-from iredis.utils import DSN
+from dice.utils import DSN
 
 
 @pytest.mark.parametrize(
@@ -30,11 +30,11 @@ def test_command_entry_tty(is_tty, raw_arg_is_raw, final_config_is_raw, config):
     with patch("sys.stdout.isatty") as patch_tty:
         patch_tty.return_value = is_tty
         if raw_arg_is_raw is None:
-            call = ["iredis"]
+            call = ["dice"]
         elif raw_arg_is_raw is True:
-            call = ["iredis", "--raw"]
+            call = ["dice", "--raw"]
         elif raw_arg_is_raw is False:
-            call = ["iredis", "--no-raw"]
+            call = ["dice", "--no-raw"]
         else:
             raise Exception()
         gather_args.main(call, standalone_mode=False)
@@ -42,37 +42,37 @@ def test_command_entry_tty(is_tty, raw_arg_is_raw, final_config_is_raw, config):
 
 
 def test_disable_pager():
-    from iredis.config import config
+    from dice.config import config
 
-    gather_args.main(["iredis", "--decode", "utf-8"], standalone_mode=False)
+    gather_args.main(["dice", "--decode", "utf-8"], standalone_mode=False)
     assert config.enable_pager
 
-    gather_args.main(["iredis", "--no-pager"], standalone_mode=False)
+    gather_args.main(["dice", "--no-pager"], standalone_mode=False)
     assert not config.enable_pager
 
 
 def test_command_with_decode_utf_8():
-    from iredis.config import config
+    from dice.config import config
 
-    gather_args.main(["iredis", "--decode", "utf-8"], standalone_mode=False)
+    gather_args.main(["dice", "--decode", "utf-8"], standalone_mode=False)
     assert config.decode == "utf-8"
 
-    gather_args.main(["iredis"], standalone_mode=False)
+    gather_args.main(["dice"], standalone_mode=False)
     assert config.decode == ""
 
 
 def test_command_with_shell_pipeline():
-    from iredis.config import config
+    from dice.config import config
 
-    gather_args.main(["iredis", "--no-shell"], standalone_mode=False)
+    gather_args.main(["dice", "--no-shell"], standalone_mode=False)
     assert config.shell is False
 
-    gather_args.main(["iredis"], standalone_mode=False)
+    gather_args.main(["dice"], standalone_mode=False)
     assert config.shell is True
 
 
 def test_command_shell_options_higher_priority():
-    from iredis.config import config
+    from dice.config import config
     from textwrap import dedent
 
     config_content = dedent(
@@ -81,14 +81,14 @@ def test_command_shell_options_higher_priority():
         shell = False
         """
     )
-    with open("/tmp/iredisrc", "w+") as etc_config:
+    with open("/tmp/dicerc", "w+") as etc_config:
         etc_config.write(config_content)
 
-    gather_args.main(["iredis", "--iredisrc", "/tmp/iredisrc"], standalone_mode=False)
+    gather_args.main(["dice", "--dicerc", "/tmp/dicerc"], standalone_mode=False)
     assert config.shell is False
 
     gather_args.main(
-        ["iredis", "--shell", "--iredisrc", "/tmp/iredisrc"], standalone_mode=False
+        ["dice", "--shell", "--dicerc", "/tmp/dicerc"], standalone_mode=False
     )
     assert config.shell is True
 

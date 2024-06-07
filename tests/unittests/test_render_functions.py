@@ -1,9 +1,9 @@
 import os
 import time
 from prompt_toolkit.formatted_text import FormattedText
-from iredis import renders
-from iredis.config import config
-from iredis.completers import IRedisCompleter
+from dice import renders
+from dice.config import config
+from dice.completers import diceCompleter
 
 
 def strip_formatted_text(formatted_text):
@@ -160,7 +160,7 @@ def test_list_or_string():
 
 
 def test_command_keys():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.key_completer.words = []
     config.raw = False
     rendered = renders.OutputRender.command_keys([b"cat", b"dog", b"banana"])
@@ -185,7 +185,7 @@ def test_command_keys():
 
 
 def test_command_scan():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.key_completer.words = []
     config.raw = False
     rendered = renders.OutputRender.command_scan(
@@ -221,7 +221,7 @@ def test_command_scan():
 
 
 def test_command_sscan():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.member_completer.words = []
     rendered = renders.OutputRender.command_sscan(
         [b"44", [b"a", b"member:__rand_int__", b"dest", b" a"]]
@@ -261,7 +261,7 @@ def test_command_sscan():
 
 
 def test_command_sscan_config_raw():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.member_completer.words = []
     rendered = renders.OutputRender.render_raw(
         [b"44", [b"a", b"member:__rand_int__", b"dest", b" a"]]
@@ -280,7 +280,7 @@ def test_command_sscan_config_raw():
 
 
 def test_render_members():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.member_completer.words = []
     config.withscores = True
     resp = [b"duck", b"667", b"camel", b"708"]
@@ -304,7 +304,7 @@ def test_render_members():
 
 
 def test_render_members_config_raw():
-    completer = IRedisCompleter()
+    completer = diceCompleter()
     completer.member_completer.words = []
     config.withscores = True
     resp = [b"duck", b"667", b"camel", b"708"]

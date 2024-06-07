@@ -272,7 +272,7 @@ transactions,EXEC,command,render_list_or_string
 transactions,MULTI,command,render_simple_string
 transactions,UNWATCH,command,render_simple_string
 transactions,WATCH,command_keys,render_simple_string
-iredis,HELP,command_command,
-iredis,PEEK,command_key,
-iredis,CLEAR,command,
-iredis,EXIT,command,
+dice,HELP,command_command,
+dice,PEEK,command_key,
+dice,CLEAR,command,
+dice,EXIT,command,

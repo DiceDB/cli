@@ -22,8 +22,8 @@ from .config import config, load_config_files
 from .processors import UserInputCommand, UpdateBottomProcessor, PasswordProcessor
 from .bottom import BottomToolbar
 from .utils import timer, exit, convert_formatted_text_to_bytes, parse_url
-from .completers import IRedisCompleter
-from .lexer import IRedisLexer
+from .completers import diceCompleter
+from .lexer import diceLexer
 from . import __version__
 
 logger = logging.getLogger(__name__)
@@ -49,20 +49,20 @@ def setup_log():
         )
     else:
         logging.disable(logging.CRITICAL)
-    logger.info("------ iRedis ------")
+    logger.info("------ dice ------")
 
 
 def greetings():
-    iredis_version = f"iredis  {__version__} (Python {platform.python_version()})"
+    dice_version = f"dice  {__version__} (Python {platform.python_version()})"
     if config.no_version_reason:
         reason = f"({config.no_version_reason})"
     else:
         reason = ""
 
     server_version = f"redis-server  {config.version} {reason}"
-    home_page = "Home:   https://iredis.xbin.io/"
-    issues = "Issues: https://github.com/laixintao/iredis/issues"
-    display = "\n".join([iredis_version, server_version, home_page, issues])
+    home_page = "Home:   https://dice.xbin.io/"
+    issues = "Issues: https://github.com/dicedb/cli/issues"
+    display = "\n".join([dice_version, server_version, home_page, issues])
     if config.raw:
         display = display.encode()
     write_result(display)
@@ -225,11 +225,11 @@ decode response, default is No decode, which will output all bytes literals.
 """
 RAINBOW = "Display colorful prompt."
 DSN_HELP = """
-Use DSN configured into the [alias_dsn] section of iredisrc file. \
-(Can set with env `IREDIS_DSN`)
+Use DSN configured into the [alias_dsn] section of dicerc file. \
+(Can set with env `dice_DSN`)
 """
 URL_HELP = """
-Use Redis URL to indicate connection(Can set with env `IREDIS_URL`), Example:
+Use Redis URL to indicate connection(Can set with env `dice_URL`), Example:
     redis://[[username]:[password]]@localhost:6379/0
     rediss://[[username]:[password]]@localhost:6379/0
     unix://[[username]:[password]]@/path/to/socket.sock?db=0
@@ -254,8 +254,8 @@ VERIFY_SSL_HELP = """Set the TLS certificate verification strategy"""
     help="User name used to auth, will be ignore for redis version < 6.",
 )
 @click.option("-a", "--password", help="Password to use when connecting to the server.")
-@click.option("--url", default=None, envvar="IREDIS_URL", help=URL_HELP)
-@click.option("-d", "--dsn", default=None, envvar="IREDIS_DSN", help=DSN_HELP)
+@click.option("--url", default=None, envvar="dice_URL", help=URL_HELP)
+@click.option("-d", "--dsn", default=None, envvar="dice_DSN", help=DSN_HELP)
 @click.option(
     "--newbie/--no-newbie",
     default=None,
@@ -263,9 +263,9 @@ VERIFY_SSL_HELP = """Set the TLS certificate verification strategy"""
     help="Show command hints and useful helps.",
 )
 @click.option(
-    "--iredisrc",
-    default="~/.iredisrc",
-    help="Config file for iredis, default is ~/.iredisrc.",
+    "--dicerc",
+    default="~/.dicerc",
+    help="Config file for dice, default is ~/.dicerc.",
 )
 @click.option("--decode", default=None, help=DECODE_HELP)
 @click.option("--client_name", help="Assign a name to the current connection.")
@@ -304,7 +304,7 @@ def gather_args(
     password,
     client_name,
     newbie,
-    iredisrc,
+    dicerc,
     decode,
     raw,
     rainbow,
@@ -319,26 +319,26 @@ def gather_args(
     prompt,
 ):
     """
-    IRedis: Interactive Redis
+    dice: Interactive Redis
 
-    When no command is given, IRedis starts in interactive mode.
+    When no command is given, dice starts in interactive mode.
 
     \b
     Examples:
-      - iredis
-      - iredis -d dsn
-      - iredis -h 127.0.0.1 -p 6379
-      - iredis -h 127.0.0.1 -p 6379 -a <password>
-      - iredis --url redis://localhost:7890/3
+      - dice
+      - dice -d dsn
+      - dice -h 127.0.0.1 -p 6379
+      - dice -h 127.0.0.1 -p 6379 -a <password>
+      - dice --url redis://localhost:7890/3
 
     Type "help" in interactive mode for information on available commands
     and settings.
     """
-    load_config_files(iredisrc)
+    load_config_files(dicerc)
     setup_log()
     logger.info(
         f"[commandline args] host={h}, port={p}, db={n}, user={username},"
-        f" newbie={newbie}, iredisrc={iredisrc}, decode={decode}, raw={raw}, cmd={cmd},"
+        f" newbie={newbie}, dicerc={dicerc}, decode={decode}, raw={raw}, cmd={cmd},"
         f" rainbow={rainbow}."
     )
     # raw config
@@ -382,7 +382,7 @@ def resolve_dsn(dsn):
         click.secho(
             "Could not find the specified DSN in the config file. "
             'Please check the "[alias_dsn]" section in your '
-            "iredisrc.",
+            "dicerc.",
             err=True,
             fg="red",
         )
@@ -491,8 +491,8 @@ def main():
         style=STYLE,
         auto_suggest=AutoSuggestFromHistory(),
         complete_while_typing=True,
-        lexer=IRedisLexer(),
-        completer=IRedisCompleter(
+        lexer=diceLexer(),
+        completer=diceCompleter(
             hint=config.newbie_mode, completion_casing=config.completion_casing
         ),
         enable_open_in_editor=True,

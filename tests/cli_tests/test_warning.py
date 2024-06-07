@@ -1,4 +1,4 @@
-from iredis.warning import is_dangerous
+from dice.warning import is_dangerous
 
 
 def test_is_dangerous():

@@ -8,8 +8,8 @@ from . import data as project_data
 # TODO verbose logger to print to stdout
 logger = logging.getLogger(__name__)
 
-system_config_file = "/etc/iredisrc"
-pwd_config_file = os.path.join(os.getcwd(), ".iredisrc")
+system_config_file = "/etc/dicerc"
+pwd_config_file = os.path.join(os.getcwd(), ".dicerc")
 
 
 class Config:
@@ -101,13 +101,13 @@ def read_config_file(f):
     return config
 
 
-def load_config_files(iredisrc):
+def load_config_files(dicerc):
     global config
 
-    with path(project_data, "iredisrc") as p:
+    with path(project_data, "dicerc") as p:
         config_obj = ConfigObj(str(p))
 
-    for _file in [system_config_file, iredisrc, pwd_config_file]:
+    for _file in [system_config_file, dicerc, pwd_config_file]:
         _config = read_config_file(_file)
         if bool(_config) is True:
             config_obj.merge(_config)
