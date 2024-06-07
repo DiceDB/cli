@@ -50,8 +50,8 @@ jobs:
           . fresh_env/bin/activate
           pip install dist/*.whl
 
-          diceroll -h
-          diceroll help GET
+          dice -h
+          dice help GET
 
       - name: Upload to Pypi
         env:
@@ -104,24 +104,24 @@ jobs:
           . fresh_env/bin/activate
           pip install dist/*.whl
 
-          diceroll -h
-          diceroll help GET
+          dice -h
+          dice help GET
 
       - name: Executable Build
         run: |
           # pyoxidizer doesn't know the wheel path, and it doesn't support passing env vars
-          export WHEEL_PATH=`ls ./dist/diceroll*.whl`
+          export WHEEL_PATH=`ls ./dist/dice*.whl`
           envsubst '$WHEEL_PATH' < pyoxidizer.template.bzl > pyoxidizer.bzl
           pip install pyoxidizer
           pyoxidizer build --release install
           cd ./build/x86*/release/install
-          tar -zcf ../../../diceroll.tar.gz lib/ diceroll
+          tar -zcf ../../../dice.tar.gz lib/ dice
           cd -
 
       - name: Test Executable
         run: |
-          ./build/x86*/release/install/diceroll -h
-          ./build/x86*/release/install/diceroll help GET
+          ./build/x86*/release/install/dice -h
+          ./build/x86*/release/install/dice help GET
 
       - name: Create Release
         id: create_release
@@ -141,6 +141,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/diceroll.tar.gz
-          asset_name: diceroll.tar.gz
+          asset_path: ./build/dice.tar.gz
+          asset_name: dice.tar.gz
           asset_content_type: application/gzip

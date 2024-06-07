@@ -3,8 +3,8 @@ def test_auth(judge_command):
 
 
 def test_auth_redis6(judge_command):
-    from diceroll.commands import command2syntax
-    from diceroll.redis_grammar import get_command_grammar
+    from dice.commands import command2syntax
+    from dice.redis_grammar import get_command_grammar
 
     get_command_grammar.cache_clear()
 

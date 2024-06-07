@@ -24,7 +24,7 @@
 - Dependency: deprecated importlib_resources, use Python build in
   `importlib.resources` now
 - Dependency: upgrade redis-py to 4.5
-- Doc: update homepage link to diceroll.xbin.io
+- Doc: update homepage link to dice.xbin.io
 - Bugfix: Fix restore command caused by string literal escape
 
 ## 1.13
@@ -34,7 +34,7 @@
 
 ### 1.12.2
 
-- Feature: Diceroll now honors the `ssl_cert_reqs` strategy, either specifying it
+- Feature: dice now honors the `ssl_cert_reqs` strategy, either specifying it
   via command line (`--verify-ssl=<none|optional|required>`) or as an url
   parameter (`ssl_cert_reqs`) when the connection is secured via tls
   (`rediss://`). (authored by [torrefatto])
@@ -43,9 +43,9 @@
 
 - Feature: support new command: `HRANDFIELD`.
 - Bugfix: all tests pass on redis:7 now.
-- Feature: Diceroll now accept `username` for auth, redis server version under 6
+- Feature: dice now accept `username` for auth, redis server version under 6
   will ignore `username`.
-- Feature: Diceroll support prompt now, you can customize prompt string. (thanks
+- Feature: dice support prompt now, you can customize prompt string. (thanks
   to [aymericbeaumet])
 
 ## 1.12
@@ -80,7 +80,7 @@
 ## 1.11
 
 - Dependency: Upgrade mistune lib to ^2.0. (see
-  https://github.com/dicedb/diceroll/issues/232)
+  https://github.com/dicedb/cli/issues/232)
 
 ## 1.10
 
@@ -88,7 +88,7 @@
   `MEMORY HELP`.
 - Feature: you can use <kbd>Ctrl</kbd> + <kbd>C</kbd> to cancel a blocking
   command like `BLPOP`.
-- Test: Diceroll now tested under ubuntu-latest (before is ubuntu-16.04)
+- Test: dice now tested under ubuntu-latest (before is ubuntu-16.04)
 - Dependency: Support Python 3.10 now, thanks to [tssujt].
 - Add new command group: `bitmap`.
 - Support new command in Redis:
@@ -104,15 +104,15 @@
 
 ### 1.9.3
 
-- Bugfix: When Diceroll start with `--decode=utf-8`, command with shell pipe will
-  fail. ( [#383](https://github.com/dicedb/diceroll/issues/383)). Thanks to
+- Bugfix: When dice start with `--decode=utf-8`, command with shell pipe will
+  fail. ( [#383](https://github.com/dicedb/cli/issues/383)). Thanks to
   [hanaasagi].
 
 ### 1.9.2
 
 - Bugfix: before `cluster` commands' `node-id` only accept numbers, not it's
   fixed. `node-id` can be `\w+`.
-- Feature: support set client name for diceroll connections via `--client-name`.
+- Feature: support set client name for dice connections via `--client-name`.
 
 ### 1.9.1
 
@@ -129,7 +129,7 @@
 - Feature: Fully support Redis6!
   - Support `STRALGO` command.
   - `MIGRATE` command now support `AUTH2`.
-  - DISABLE `hello` command, Diceroll not support RESP3.
+  - DISABLE `hello` command, dice not support RESP3.
 
 ### 1.7.4
 
@@ -137,7 +137,7 @@
 
 ### 1.7.3
 
-- Bugfix: Diceroll can be suspended by <kbd>Ctrl</kbd> + <kbd>Z</kbd>. (Thanks
+- Bugfix: dice can be suspended by <kbd>Ctrl</kbd> + <kbd>Z</kbd>. (Thanks
   [wooden-robot])
 - Bugfix: Press <kbd>Enter</kbd> when completion is open will not execute
   commands. (Thanks [wooden-robot])
@@ -147,7 +147,7 @@
 
 ### 1.7.2
 
-- Feature: Support `ACL` ( [#340](https://github.com/dicedb/diceroll/pull/343)
+- Feature: Support `ACL` ( [#340](https://github.com/dicedb/cli/pull/343)
   ).
 - Bugfix: Include tests in source distribution.
 
@@ -162,7 +162,7 @@
 - Update: Builtin doc was updated with latest
   redis-doc(dd4159397f115d53423c21337eedb04d3258d291).
 - Feature: New command support: `CLIENT GETREDIR`, `CLIENT TRACKING` and
-- Test: Diceroll now was tested in both Redis 5 and Redis 6.
+- Test: dice now was tested in both Redis 5 and Redis 6.
 - Bugfix: Fix exception when transaction fails. (Thanks [brianmaissy])
 - Bugfix: Merging multiple spaces bug, e.g. `set foo "hello world"` will result
   in sending `set foo "hello world"` to redis-server. `CLIENT CACHING`.
@@ -181,12 +181,12 @@
 ## 1.6
 
 - Feature: support pager. You can disable it using `--no-pager` or in your
-  `dicerollrc`, or change the pager behavior by setting `pager` in `dicerollrc`.
+  `dicerc`, or change the pager behavior by setting `pager` in `dicerc`.
 
 ## 1.5
 
 - Bugfix: PEEK command do not use MEMORY USAGE before redis version 4.0.
-- Feature: Support disable shell pipeline feature in dicerollrc. (Thanks
+- Feature: Support disable shell pipeline feature in dicerc. (Thanks
   [wooden-robot])
 
 ### 1.4.3
@@ -211,7 +211,7 @@
 - Bugfix: Fix PyOxidizer binary build.
 - Feature: Completer for HELP command.
 - Bugfix: Lowercase for `--newbie` mode.
-- Bugfix: Bottom hint for Diceroll builtin commands.
+- Bugfix: Bottom hint for dice builtin commands.
 
 ## 1.3.0
 
@@ -263,7 +263,7 @@
 ### 1.0.4
 
 - Bugfix: command completions when a command is substring of another command.
-  [issue#198](https://github.com/dicedb/diceroll/issues/198)
+  [issue#198](https://github.com/dicedb/cli/issues/198)
 
 ### 1.0.3
 
@@ -276,13 +276,13 @@
 ### 1.0.1
 
 - Bugfix: Fix info command decode error on
-  decode=utf-8 #[266](https://github.com/dicedb/diceroll/pull/266)
+  decode=utf-8 #[266](https://github.com/dicedb/cli/pull/266)
 
 # 1.0
 
-- Feature: Support `EXIT` to exit diceroll REPL.
+- Feature: Support `EXIT` to exit dice REPL.
 - Feature: Support `CLEAR` to clear screen.
-- Feature: Support config log location in dicerollrc file, default to None.
+- Feature: Support config log location in dicerc file, default to None.
 
 ### 0.9.1
 
@@ -295,7 +295,7 @@
 - Support stream commands. _ Timestamp completer support. _ Stream command
   renders and lexers.
 - Bugfix: When response is None,
-  `diceroll.completers.udpate_completer_for_responase` will raise Exception.
+  `dice.completers.udpate_completer_for_responase` will raise Exception.
 
 ### 0.8.12
 
@@ -310,7 +310,7 @@
 
 ### 0.8.10
 
-- Bugfix: previous version of diceroll didn't package redis-doc correctly.
+- Bugfix: previous version of dice didn't package redis-doc correctly.
 - Feature: prompt for dangerous commands.
 
 ### 0.8.9
@@ -319,7 +319,7 @@
 
 ### 0.8.8
 
-- Bugfix: pipeline in diceroll can run shell command include pipes. thanks to
+- Bugfix: pipeline in dice can run shell command include pipes. thanks to
   [Wooden-Robot].
 
 ### 0.8.7

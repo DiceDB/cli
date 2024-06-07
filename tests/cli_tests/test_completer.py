@@ -39,9 +39,9 @@ def test_command_completion_when_space_command(cli, clean_redis):
 
 
 @pytest.mark.skipif("version_parse(os.environ['REDIS_VERSION']) < version_parse('6')")
-def test_username_completer(cli, diceroll_client):
-    diceroll_client.execute("acl setuser", "foo1")
-    diceroll_client.execute("acl setuser", "bar2")
+def test_username_completer(cli, dice_client):
+    dice_client.execute("acl setuser", "foo1")
+    dice_client.execute("acl setuser", "bar2")
 
     cli.expect("127.0.0.1")
     cli.sendline("acl users")

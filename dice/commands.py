@@ -69,7 +69,7 @@ all_commands = sorted(
 )
 # load commands information from redis-doc/commands.json
 commands_summary = _load_command_summary()
-# add diceroll' commands' summary
+# add dice' commands' summary
 commands_summary.update(
     {
         "HELP": {
@@ -77,26 +77,26 @@ commands_summary.update(
             "complexity": "O(1).",
             "arguments": [{"name": "command", "type": "string"}],
             "since": "1.0",
-            "group": "diceroll",
+            "group": "dice",
         },
         "CLEAR": {
             "summary": "Clear the screen like bash clear.",
             "complexity": "O(1).",
             "since": "1.0",
-            "group": "diceroll",
+            "group": "dice",
         },
         "EXIT": {
-            "summary": "Exit diceroll.",
+            "summary": "Exit dice.",
             "complexity": "O(1).",
             "since": "1.0",
-            "group": "diceroll",
+            "group": "dice",
         },
         "PEEK": {
             "summary": "Get the key's type and value.",
             "arguments": [{"name": "key", "type": "key"}],
             "complexity": "O(1).",
             "since": "1.0",
-            "group": "diceroll",
+            "group": "dice",
         },
     }
 )

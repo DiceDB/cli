@@ -14,7 +14,7 @@
 [2.308611, "o", "\u001b[?1l\u001b>"]
 [2.308783, "o", "\u001b[?2004l\r\r\n"]
 [2.311011, "o", "\u001b]133;C;\u0007"]
-[2.589501, "o", "\u001b[0m\u001b[?7h\u001b[0mdiceroll  0.8.0\r\r\nredis-server  5.0.6 \r\r\nHome:   https://diceroll.io\r\r\nIssues: https://diceroll.io/issues\u001b[0m\u001b[0m"]
+[2.589501, "o", "\u001b[0m\u001b[?7h\u001b[0mdice  0.8.0\r\r\nredis-server  5.0.6 \r\r\nHome:   https://dice.io\r\r\nIssues: https://dice.io/issues\u001b[0m\u001b[0m"]
 [2.591596, "o", "\u001b[0m\u001b[?7h\u001b[0m\r\r\n\u001b[0m"]
 [2.592274, "o", "\u001b[?1l"]
 [2.592372, "o", "\u001b[6n"]

@@ -143,7 +143,7 @@ class TimestampCompleter(Completer):
         yield from sorted(completions, key=lambda a: a.text)
 
 
-class DicerollCompleter(Completer):
+class diceCompleter(Completer):
     """
     Completer class that can dynamically returns any Completer.
 

@@ -1,4 +1,4 @@
-FROM dicedb/dice:latest
+FROM dicedb/cli:latest
 
 COPY . /cli
 
@@ -13,4 +13,4 @@ WORKDIR /
 RUN rm -rf .cache /var/cache/apt
 RUN rm -rf /cli
 
-CMD ["sh", "-c", "/opt/redis-stack/bin/redis-stack-server --daemonize yes && diceroll"]
+CMD ["sh", "-c", "/opt/redis-stack/bin/redis-stack-server --daemonize yes && dice"]

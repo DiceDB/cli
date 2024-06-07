@@ -1,5 +1,5 @@
-[submodule "diceroll/data/redis-doc"]
-	path = diceroll/data/redis-doc
+[submodule "dice/data/redis-doc"]
+	path = dice/data/redis-doc
 	url = https://github.com/antirez/redis-doc.git
 [submodule "redis-doc"]
 	path = redis-doc

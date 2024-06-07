@@ -8,15 +8,15 @@ https://github.com/antirez/redis-doc/commit/02b3d1a345093c1794fd86273e9d516fffd3
 import pytest
 from importlib.resources import read_text
 
-from diceroll.commands import commands_summary
-from diceroll.data import commands as commands_data
-from diceroll.markdown import render
+from dice.commands import commands_summary
+from dice.data import commands as commands_data
+from dice.markdown import render
 
 
 doc_files = []
 for command, info in commands_summary.items():
     command_docs_name = "-".join(command.split()).lower()
-    if info["group"] == "diceroll":
+    if info["group"] == "dice":
         continue
     doc_files.append(f"{command_docs_name}.md")
 

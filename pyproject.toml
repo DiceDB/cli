@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "diceroll"
+name = "dice"
 version = "1.15.0"
 description = "Terminal client for Redis with auto-completion and syntax highlighting."
 authors = ["arpitbbhayani"]
 readme = 'README.md'
 license = "BSD-3-Clause"
-repository = 'https://github.com/dicedb/diceroll'
-homepage = "https://github.com/dicedb/diceroll"
+repository = 'https://github.com/dicedb/cli'
+homepage = "https://github.com/dicedb/cli"
 keywords=["Redis", "key-value store", "Commandline tools", "Redis Client"]
 classifiers = [
 # see https://pypi.org/pypi?%3Aaction=list_classifiers
@@ -26,7 +26,7 @@ classifiers = [
 ]
 
 packages = [
-    { include = "diceroll" },
+    { include = "dice" },
 ]
 
 [tool.poetry.dependencies]
@@ -47,7 +47,7 @@ pytest = "^7.2"
 pexpect = "^4.7"
 
 [tool.poetry.scripts]
-diceroll = 'diceroll.entry:main'
+dice = 'dice.entry:main'
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.4.0"

@@ -3,17 +3,17 @@ import time
 import pytest
 from unittest.mock import patch
 
-from diceroll.utils import timer, strip_quote_args
-from diceroll.commands import split_command_args, split_unknown_args
-from diceroll.utils import command_syntax
-from diceroll.style import STYLE
-from diceroll.exceptions import InvalidArguments, AmbiguousCommand
-from diceroll.commands import commands_summary
+from dice.utils import timer, strip_quote_args
+from dice.commands import split_command_args, split_unknown_args
+from dice.utils import command_syntax
+from dice.style import STYLE
+from dice.exceptions import InvalidArguments, AmbiguousCommand
+from dice.commands import commands_summary
 from prompt_toolkit import print_formatted_text
 
 
 def test_timer():
-    with patch("diceroll.utils.logger") as mock_logger:
+    with patch("dice.utils.logger") as mock_logger:
         timer("foo")
         time.sleep(0.1)
         timer("bar")

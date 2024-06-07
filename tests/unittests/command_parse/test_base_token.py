@@ -57,7 +57,7 @@ def test_command_with_key_in_quotes(judge_command):
 
 
 def test_timeout(token_should_match, token_should_not_match):
-    from diceroll.redis_grammar import TIMEOUT
+    from dice.redis_grammar import TIMEOUT
 
     token_should_match(TIMEOUT, "1.1")
     token_should_match(TIMEOUT, "1.0")
@@ -69,7 +69,7 @@ def test_timeout(token_should_match, token_should_not_match):
 
 
 def test_lr_const(token_should_match, token_should_not_match):
-    from diceroll.redis_grammar import LR_CONST
+    from dice.redis_grammar import LR_CONST
 
     token_should_match(LR_CONST, "left")
     token_should_match(LR_CONST, "right")
