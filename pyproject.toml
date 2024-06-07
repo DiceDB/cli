@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "dice"
-version = "1.15.0"
-description = "Terminal client for Redis with auto-completion and syntax highlighting."
+name = "dice-cli"
+version = "0.0.1"
+description = "A CLI for DiceDB with auto completion and syntax highlighting."
 authors = ["arpitbbhayani"]
 readme = 'README.md'
 license = "BSD-3-Clause"
