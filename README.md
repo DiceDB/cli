@@ -1,3 +1,18 @@
+# DiceRoll
+===
+
+A CLI for [DiceDB](https://github.com/dicedb/dice) with auto completion and syntax highlighting.
+
+## Development
+
+```
+$ python -m venv venv
+$ . venv/bin/activate
+$ pip install -e .
+```
+
+---
+
 <p align="center">
   <img width="100" height="100" src="https://raw.githubusercontent.com/laixintao/iredis/master/docs/assets/logo.png" />
 </p>
