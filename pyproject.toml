@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dicedb-cli"
-version = "0.0.1"
+version = "0.0.2"
 description = "A CLI for DiceDB with auto completion and syntax highlighting."
 authors = ["arpitbbhayani"]
 readme = 'README.md'
