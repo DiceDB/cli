@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dicecli"
+name = "dicedb-cli"
 version = "0.0.1"
 description = "A CLI for DiceDB with auto completion and syntax highlighting."
 authors = ["arpitbbhayani"]
