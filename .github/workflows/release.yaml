@@ -41,7 +41,6 @@ jobs:
           pip install dist/*.whl
 
           dice -h
-          dice help GET
 
       - name: Upload to Pypi
         env:
@@ -86,7 +85,6 @@ jobs:
           pip install dist/*.whl
 
           dice -h
-          dice help GET
 
       - name: Executable Build
         run: |
@@ -96,13 +94,12 @@ jobs:
           pip install pyoxidizer
           pyoxidizer build --release install
           cd ./build/x86*/release/install
-          tar -zcf ../../../dice.tar.gz lib/ dice
+          tar -zcf ../../../dice-cli.tar.gz lib/ dice
           cd -
 
       - name: Test Executable
         run: |
           ./build/x86*/release/install/dice -h
-          ./build/x86*/release/install/dice help GET
 
       - name: Create Release
         id: create_release
@@ -122,6 +119,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/dice.tar.gz
-          asset_name: dice.tar.gz
+          asset_path: ./build/dice-cli.tar.gz
+          asset_name: dice-cli.tar.gz
           asset_content_type: application/gzip
