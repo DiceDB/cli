@@ -243,7 +243,7 @@ VERIFY_SSL_HELP = """Set the TLS certificate verification strategy"""
 @click.command()
 @click.pass_context
 @click.option("-h", help="Server hostname (default: 127.0.0.1).", default="127.0.0.1")
-@click.option("-p", help="Server port (default: 6379).", default="6379")
+@click.option("-p", help="Server port (default: 7379).", default="7379")
 @click.option(
     "-s", "--socket", default=None, help="Server socket (overrides hostname and port)."
 )
