@@ -98,6 +98,13 @@ commands_summary.update(
             "since": "1.0",
             "group": "dice",
         },
+        "QWATCH": {
+            "summary": "Watches a dice query for any changes.",
+            "arguments": [{"name": "query", "type": "string"}],
+            "complexity": "O(n).",
+            "since": "1.0",
+            "group": "pubsub",
+        },
     }
 )
 timer("[Loader] Finished loading commands.")

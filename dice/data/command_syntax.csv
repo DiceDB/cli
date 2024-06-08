@@ -276,3 +276,4 @@ dice,HELP,command_command,
 dice,PEEK,command_key,
 dice,CLEAR,command,
 dice,EXIT,command,
+pubsub,QWATCH,command_channels,render_subscribe
