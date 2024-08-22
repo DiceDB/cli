@@ -496,11 +496,12 @@ class Client:
             elif input_command_upper in [
                 "SUBSCRIBE",
                 "PSUBSCRIBE",
+                "QWATCH"
             ]:  # enter subscribe mode
                 try:
                     yield from self.subscribing()
                 except KeyboardInterrupt:
-                    yield from self.unsubscribing()
+                    return self.unsubscribing()
         except Exception as e:
             logger.exception(e)
             if config.raw:

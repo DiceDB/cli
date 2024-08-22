@@ -12860,6 +12860,30 @@
             "stale"
         ]
     },
+    "QWATCH": {
+        "summary": "Listen for messages published to the watched query",
+        "since": "0.0.2",
+        "group": "pubsub",
+        "complexity": "O(N) where N is the number of clients connected to the server.",
+        "acl_categories": [
+            "@pubsub",
+            "@slow"
+        ],
+        "arity": -2,
+        "arguments": [
+            {
+                "name": "query",
+                "type": "string",
+                "multiple": false
+            }
+        ],
+        "command_flags": [
+            "pubsub",
+            "noscript",
+            "loading",
+            "stale"
+        ]
+    },
     "SUBSTR": {
         "summary": "Get a substring of the string stored at a key",
         "since": "1.0.0",
