@@ -121,6 +121,8 @@ pubsub,PUBSUB,command_pubsubcmd_channels,render_list_or_string
 pubsub,PUNSUBSCRIBE,command_channels,render_subscribe
 pubsub,SUBSCRIBE,command_channels,render_subscribe
 pubsub,UNSUBSCRIBE,command_channels,render_subscribe
+pubsub,QWATCH,command_channels,render_subscribe
+pubsub,QUNWATCH,command_channels,render_raw
 scripting,EVAL,command_lua_any,render_list_or_string
 scripting,EVAL_RO,command_lua_any,render_list_or_string
 scripting,EVALSHA,command_any,render_list_or_string

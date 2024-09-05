@@ -394,22 +394,25 @@ class Client:
             else:
                 yield OutputRender.render_bulk_string_decode(response)
 
-    def subscribing(self):
+    def subscribing(self, command_name):
+        callback = OutputRender.get_render(command_name=command_name)
         while 1:
             response = self.connection.read_response()
-            if config.raw:
-                yield OutputRender.render_raw(response)
-            else:
-                yield OutputRender.render_subscribe(response)
+            yield callback(response)
 
-    def unsubscribing(self):
+    def unsubscribing(self, command_name, args):
         "unsubscribe from all channels"
-        response = self.execute("UNSUBSCRIBE")
-        if config.raw:
-            yield OutputRender.render_raw(response)
-        else:
-            yield OutputRender.render_subscribe(response)
+        m = {
+            "QWATCH": "QUNWATCH",
+            "SUBSCRIBE": "UNSUBSCRIBE",
+            "PSUBSCRIBE": "PUNSUBSCRIBE"
+        }
+        unsub_cmd = m[command_name]
 
+        response = self.execute(unsub_cmd, *args)
+        yield OutputRender.render_raw(response)
+
+        
     def split_command_and_pipeline(self, rawinput, completer: diceCompleter):
         """
         split user raw input to redis command and shell pipeline.
@@ -496,11 +499,12 @@ class Client:
             elif input_command_upper in [
                 "SUBSCRIBE",
                 "PSUBSCRIBE",
+                "QWATCH"
             ]:  # enter subscribe mode
                 try:
-                    yield from self.subscribing()
+                    yield from self.subscribing(input_command_upper)
                 except KeyboardInterrupt:
-                    yield from self.unsubscribing()
+                    yield from self.unsubscribing(input_command_upper, args)
         except Exception as e:
             logger.exception(e)
             if config.raw:
