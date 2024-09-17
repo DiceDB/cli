@@ -57,7 +57,7 @@ class Client:
     def __init__(
         self,
         host="127.0.0.1",
-        port=6379,
+        port=7379,
         db=0,
         password=None,
         path=None,
