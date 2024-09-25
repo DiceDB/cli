@@ -1,5 +1,5 @@
 
-# DiceDB CLI with Auto Completion and Syntax Highlighting
+# [DiceDB](https://github.com/dicedb/cli) CLI with Auto Completion and Syntax Highlighting
 
 
 ## Running with Poetry
