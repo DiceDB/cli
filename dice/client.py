@@ -403,7 +403,7 @@ class Client:
     def unsubscribing(self, command_name, args):
         "unsubscribe from all channels"
         m = {
-            "QWATCH": "QUNWATCH",
+            "Q.WATCH": "Q.UNWATCH",
             "SUBSCRIBE": "UNSUBSCRIBE",
             "PSUBSCRIBE": "PUNSUBSCRIBE"
         }
@@ -499,7 +499,7 @@ class Client:
             elif input_command_upper in [
                 "SUBSCRIBE",
                 "PSUBSCRIBE",
-                "QWATCH"
+                "Q.WATCH"
             ]:  # enter subscribe mode
                 try:
                     yield from self.subscribing(input_command_upper)

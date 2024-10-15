@@ -12860,7 +12860,7 @@
             "stale"
         ]
     },
-    "QWATCH": {
+    "Q.WATCH": {
         "summary": "Listen for messages published to the watched query",
         "since": "0.0.2",
         "group": "pubsub",
